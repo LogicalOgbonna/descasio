@@ -1,0 +1,22 @@
+
+.number {
+    background-color: #CCE6FF;
+    color: #173A5F;
+}
+
+.operator {
+    background-color: #A3D0FA;
+    color: #4E8AC8;
+}
+
+.enter-button {
+    background-color: #1C3F64;
+    color: #CCE6FF;
+}
+/* #enter-div {
+    width: 100% !important;
+}
+
+#enter_button {
+    width: 100% !important;
+} */
