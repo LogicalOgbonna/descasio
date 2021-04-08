@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { ButtonRow, DisplayResult, Button } from './components';
 import brain from './helpers/brain';
+import keyPressed from './helpers/keyPressed';
 
 function App() {
 
@@ -10,26 +11,14 @@ function App() {
   const [notworkingOperand, setNotworkingOperand] = useState('');
 
   useEffect(() => {
-    const keyPressed = ({ key }) => {
-      if (["+", "-", "*", "÷", "/"].includes(key)) {
-        if (key === "/") return setInput(`${input} ÷ `)
-        setInput(`${input} ${key} `)
-      }
-      if (['Enter', '='].includes(key)) {
-        const tempAns = brain(input);
-        setNotworkingOperand("")
-        setAnswer(tempAns);
-      }
-      if (key === "Backspace") {
-        setInput(input.substring(0, input.length - 1));
-        if (input.length <= 1) setAnswer(0)
-      }
-      if (isNaN(key)) return;
-      setInput(input + key);
+
+    const onKeyPress = ({ key }) => {
+      keyPressed({ key, input, setInput, brain, setNotworkingOperand, setAnswer })
     }
-    document.addEventListener('keydown', keyPressed)
+
+    document.addEventListener('keydown', onKeyPress)
     return () => {
-      document.removeEventListener('keydown', keyPressed)
+      document.removeEventListener('keydown', onKeyPress)
     }
   }, [input]);
 
@@ -37,10 +26,14 @@ function App() {
     if (!input.length && ["+", "*", "÷"].includes(val)) return // only allowing case like -1 and not +1 or *1 or /1 to start
     if (input[input.length - 2] === val) return // not allowing a case like ++ or --
     if (["+", "-", "*", "÷"].includes(input[input.length - 2])) return // not allowing as case like +- or *+
-    if (input.indexOf(".") !== -1) return // not allowing double . in a number
     setInput(input + " " + val + " ")
   }
   const onclickNumber = (val) => {
+    setInput(input + val)
+  }
+
+  const onclickPoint = (val) => {
+    if (input.indexOf(".") !== -1) return // not allowing double . in a number
     setInput(input + val)
   }
 
@@ -106,7 +99,7 @@ function App() {
             <Button onClick={onclickOperator}>-</Button>
           </ButtonRow>
           <ButtonRow>
-            <Button last onClick={onclickOperator}>.</Button>
+            <Button last onClick={onclickPoint}>.</Button>
             <Button last onClick={onclickNumber}>0</Button>
             <Button last onClick={onclickOperator}>&#177;</Button>
             <Button enter onClick={onPerformAction}>ENTER</Button>
